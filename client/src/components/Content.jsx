@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast, { Toaster } from 'react-hot-toast';
 
 const Content = () => {
   const validateEmail = (email) => {
@@ -6,6 +7,15 @@ const Content = () => {
       /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
   };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (validateEmail(email)) {
+      toast.success("Valid mail")
+    } else {
+      toast.error('Invalid email');
+    }
+  }
 
   const [email, setEmail] = useState("");
   return (
@@ -30,8 +40,8 @@ const Content = () => {
               Sign Up
             </div>
           </div>
-
-          <form action="#">
+          <Toaster />
+          <form action="#" onSubmit={submitHandler}>
             <div className="flex flex-col">
               <input
                 type="text"
@@ -47,15 +57,6 @@ const Content = () => {
               <button
                 type="submit"
                 className="bg-green-400 text-sm hover:text-base ease-in-out duration-300 flex-grow text-slate-100 py-4"
-                onClick={(e) => {
-                  e.preventDefault();
-                  console.log();
-                  if (validateEmail(email)) {
-                    console.log("başarılısss");
-                  } else {
-                    console.log("non-valid email");
-                  }
-                }}
               >
                 LOG IN
               </button>
