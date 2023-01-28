@@ -1,7 +1,19 @@
 import { useState } from "react";
+import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
 
 const Content = () => {
+
+  const url = "api/users";
+  const [data, setData] = useState({
+    email: "",
+    password: ""
+  });
+
+  
+  /* const [users, setUsers] = useState([]); */
+
+
   const validateEmail = (email) => {
     return email.match(
       /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -11,7 +23,16 @@ const Content = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     if (validateEmail(email)) {
-      toast.success("Valid mail")
+      axios.post(url, {
+        email: data.email,
+        password: data.password
+      })
+      /* axios.get("api/users")
+        .then(res => {
+          setUsers(res.data)
+          users.forEach(user => console.log(user));
+        })
+        .catch(e => console.log(e)) */
     } else {
       toast.error('Invalid email');
     }
