@@ -1,18 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 
 const Content = () => {
-
-  const url = "api/users";
-  const [data, setData] = useState({
-    email: "",
-    password: ""
-  });
-
-  
-  /* const [users, setUsers] = useState([]); */
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const validateEmail = (email) => {
     return email.match(
@@ -23,22 +15,18 @@ const Content = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     if (validateEmail(email)) {
-      axios.post(url, {
-        email: data.email,
-        password: data.password
-      })
-      /* axios.get("api/users")
-        .then(res => {
-          setUsers(res.data)
-          users.forEach(user => console.log(user));
+      axios
+        .post("/api/login", {
+          email: email,
+          password: password,
         })
-        .catch(e => console.log(e)) */
+        .then((result) => console.log(result))
+        .catch((err) => console.error(err));
     } else {
-      toast.error('Invalid email');
+      toast.error("Invalid email");
     }
-  }
+  };
 
-  const [email, setEmail] = useState("");
   return (
     <main className="container mx-auto">
       <div className="flex flex-col justify-center items-center">
@@ -71,9 +59,10 @@ const Content = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
               <input
-                type="text"
+                type="password"
                 placeholder="your password"
                 className="py-1 px-2 m-1 rounded border-gray-400 bg-slate-200 text-xs"
+                onChange={(e) => setPassword(e.target.value)}
               />
               <button
                 type="submit"

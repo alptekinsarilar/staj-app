@@ -1,36 +1,59 @@
-import express from "express";
+const express = require("express");
+const mongoose = require("mongoose");
+// controller service repository
+// log in yap ve içeriği get'le (username password var mmı yok mu)
+// yoksa hata mesajı çıkart
+// class-validator library sor
+const User = require("./models/User");
 
+// express app
 const app = express();
 
+// middleware
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies (as sent by HTML forms)
+app.use(express.json()); // Parse JSON bodies (as sent by API clients)
+
+// connect to db
+const dbURI =
+  "mongodb+srv://alptekinsarilar:K2vWa0KBJbSTZCQR@staj-app.bw7hhjr.mongodb.net/staj-db";
+mongoose.set("strictQuery", false);
+mongoose
+  .connect(dbURI)
+  .then((result) => {
+    console.log("Connected to db");
+    app.listen(8080, () => {
+      console.log("Listening on port 8080");
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
 app.get("/api/users", (req, res) => {
-    res.send([
-        {
-            id: 1,
-            name: "Ahmet",
-            age: 22
-        },
-        {
-            id: 2,
-            name: "Banu",
-            age: 25
-        },
-        {
-            id: 3,
-            name: "Hasan",
-            age: 17
-        },
-    ])
-})
+  res.send([
+    {
+      id: 1,
+      name: "Ahmet",
+      age: 22,
+    },
+    {
+      id: 2,
+      name: "Banu",
+      age: 25,
+    },
+    {
+      id: 3,
+      name: "Hasan",
+      age: 17,
+    },
+  ]);
+});
 
-app.post("/api/login" , (req, res) => {
-    const data = req.body;
-    console.log(data);
-    res.send(data);
-})
-
-
-const port = process.env.PORT || 8080;
-
-app.listen(8080, () => {
-    console.log("Listening on port 8080")
-})
+app.post("/api/login", (req, res) => {
+  const { email, password } = req.body;
+  const newUser = new User({ email, password });
+  newUser
+    .save()
+    .then((result) => res.send(result))
+    .catch((err) => console.log(err));
+});
