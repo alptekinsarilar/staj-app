@@ -1,5 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
+
+// Import the dotenv library at the top of your main file
+const dotenv = require("dotenv");
+
+// Load the environment variables from the .env file
+dotenv.config();
+
 // controller service repository
 // log in yap ve içeriği get'le (username password var mmı yok mu)
 // yoksa hata mesajı çıkart
@@ -14,8 +21,10 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies (as
 app.use(express.json()); // Parse JSON bodies (as sent by API clients)
 
 // connect to db
-const dbURI =
-  "mongodb+srv://alptekinsarilar:K2vWa0KBJbSTZCQR@staj-app.bw7hhjr.mongodb.net/staj-db";
+
+// Access the environment variables in your code
+const dbURI = process.env.DB_URI;
+
 mongoose.set("strictQuery", false);
 mongoose
   .connect(dbURI)
