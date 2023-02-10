@@ -6,11 +6,25 @@ const Content = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // deneme butonu
+  const [isToggled, setToggled] = useState(true);
+  const toggleHandler = () => {
+    setToggled((prevState) => !prevState);
+  };
+
+  // login mi sign in kısmında mı onu kontrol ediyoruz
+  // true ise login false ise signin tab'ı aktif durumda
+  const [isLoginSignin, setLoginSignin] = useState(true);
+  const loginSigninHandler = () => {
+    setLoginSignin((prevState) => !prevState);
+  };
+
   const validateEmail = (email) => {
     return email.match(
       /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
   };
+  // login signup request farkı ayarla
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -37,14 +51,24 @@ const Content = () => {
         <div className="flex flex-col w-3/4 sm:w-1/3 bg-slate-50 rounded-xl mx-auto min-w-fit overflow-hidden">
           <div className="flex items-center justify-start my-4 mx-2">
             <div
+              onClick={loginSigninHandler}
               tabIndex={1}
-              className=" text-xl ease-in-out duration-300 focus:text-3xl focus:pointer-events-none  hover:text-gray-500 mx-2 cursor-pointer"
+              className={` text-xl ease-in-out duration-300 hover:text-gray-500 mx-2 cursor-pointer ${
+                isLoginSignin
+                  ? "text-3xl pointer-events-none"
+                  : "cursor-pointer"
+              } `}
             >
               Log In
             </div>
             <div
+              onClick={loginSigninHandler}
               tabIndex={2}
-              className=" text-xl ease-in-out duration-300 focus:text-3xl focus:pointer-events-none hover:text-gray-500 mx-2 cursor-pointer"
+              className={` text-xl ease-in-out duration-300 hover:text-gray-500 mx-2 cursor-pointer ${
+                isLoginSignin
+                  ? "cursor-pointer"
+                  : "text-3xl pointer-events-none"
+              } `}
             >
               Sign Up
             </div>
@@ -73,6 +97,12 @@ const Content = () => {
             </div>
           </form>
         </div>
+        <button
+          onClick={toggleHandler}
+          className={`p-4 ${isToggled ? "bg-gray-700" : "bg-gray-100"}`}
+        >
+          {isToggled ? "Active component" : "Inactive component"}
+        </button>
       </div>
     </main>
   );
