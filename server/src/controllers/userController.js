@@ -1,8 +1,15 @@
-const User = require("../models/UserModel");
+const User = require("../models/User");
+const { validationResult } = require("express-validator");
 
-// parametreden gelen email ile kullanıcı dönülecek eğer kullanıcı varsa
-// ToDo
-exports.getUser = (req, res) => {
+exports.loginUser = (req, res) => {
+  // Finds the validation errors in this request and wraps them in an object with handy functions
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const email = req.body.email;
+  const password = req.body.password;
   User.findOne({}, (err, users) => {
     if (err) return res.status(500).send(err);
     res.send(users);
@@ -10,9 +17,16 @@ exports.getUser = (req, res) => {
 };
 
 exports.createUser = (req, res) => {
-  const user = new User(req.body);
-  user.save((err, user) => {
-    if (err) return res.status(500).send(err);
-    res.send(user);
-  });
+  // Finds the validation errors in this request and wraps them in an object with handy functions
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { email, password } = req.body;
+  const newUser = new User({ email, password });
+  newUser
+    .save()
+    .then((result) => res.send(result))
+    .catch((err) => console.log(err));
 };

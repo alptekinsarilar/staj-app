@@ -1,16 +1,12 @@
 const express = require("express");
-const mongoose = require("mongoose");
-
-const dotenv = require("dotenv");
-dotenv.config();
-
+const allRoutes = require("./routes/allRoutes");
 const morgan = require("morgan");
 
-// controller service repository
 // log in yap ve içeriği get'le (username password var mmı yok mu)
 // yoksa hata mesajı çıkart
-// class-validator library sor
-const User = require("./models/User");
+
+// db connection
+const db = require("./config/database");
 
 // express app
 const app = express();
@@ -20,48 +16,9 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies (as
 app.use(express.json()); // Parse JSON bodies (as sent by API clients)
 app.use(morgan("tiny"));
 
-// connect to db
+// routes
+app.use("/api", allRoutes);
 
-const dbURI = process.env.DB_URI;
-
-mongoose.set("strictQuery", false);
-mongoose
-  .connect(dbURI)
-  .then((result) => {
-    console.log("Connected to db");
-    app.listen(8080, () => {
-      console.log("Listening on port 8080");
-    });
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-
-app.get("/api/users", (req, res) => {
-  res.send([
-    {
-      id: 1,
-      name: "Ahmet",
-      age: 22,
-    },
-    {
-      id: 2,
-      name: "Banu",
-      age: 25,
-    },
-    {
-      id: 3,
-      name: "Hasan",
-      age: 17,
-    },
-  ]);
-});
-
-app.post("/api/login", (req, res) => {
-  const { email, password } = req.body;
-  const newUser = new User({ email, password });
-  newUser
-    .save()
-    .then((result) => res.send(result))
-    .catch((err) => console.log(err));
+app.listen(8080, () => {
+  console.log(`Server started on port 8080`);
 });
