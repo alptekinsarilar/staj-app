@@ -6,24 +6,35 @@ exports.loginUser = async (req, res) => {
   // Finds the validation errors in this request and wraps them in an object with handy functions
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    req.log({
+      email: req.body.email,
+      operationType: "login",
+      status: "fail",
+    });
     return res.status(400).json({ errors: errors.array() });
   }
 
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    res.status(400).send("No such email!");
+    res.status(401).send("No such email!"); // Unauthorized
+    req.log({ email, operationType: "login", status: "fail" });
+    return;
   }
 
   try {
-    const hashedPassword = user.password;
-    if (await bcrypt.compare(password, hashedPassword)) {
+    const match = await bcrypt.compare(password, user.password);
+    if (match) {
       res.send("Success!");
+      req.loginUpdate(email); // updating lastLogin property of User document in db
+      req.log({ email: user.email, operationType: "login", status: "success" });
     } else {
-      res.send("Wrong Password!");
+      res.status(401).send("Wrong Password!");
+      req.log({ email: user.email, operationType: "login", status: "fail" });
     }
   } catch (error) {
     res.status(500).send("Internal Server Error!");
+    req.log({ email: user.email, operationType: "login", status: "fail" });
   }
 };
 
