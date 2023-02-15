@@ -9,8 +9,14 @@ const logSchema = new Schema({
   logs: [
     {
       operationDate: Date,
-      operationType: String,
-      status: String,
+      operationType: {
+        type: String,
+        enum: ["login", "signup"],
+      },
+      status: {
+        type: String,
+        enum: ["success", "fail"],
+      },
     },
   ],
 });

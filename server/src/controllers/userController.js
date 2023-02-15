@@ -42,6 +42,11 @@ exports.createUser = async (req, res) => {
   // Finds the validation errors in this request and wraps them in an object with handy functions
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    req.log({
+      email: req.body.email,
+      operationType: "signup",
+      status: "fail",
+    });
     return res.status(400).json({ errors: errors.array() });
   }
 
@@ -53,17 +58,17 @@ exports.createUser = async (req, res) => {
   const newUser = new User({ email: email, password: hashedPassword });
   newUser
     .save()
-    .then((result) => res.send(result))
+    .then((result) => {
+      req.log({
+        email,
+        operationType: "signup",
+        status: "success",
+      });
+      res.send(result);
+    })
     .catch((err) => console.log(err));
 };
 
-// login ve signup loglarını yeni bir collection'da tut
-// loginDate'ler arrayde , her bir email için ayrı array
 // patch servisi
-// log ve user management
-// collection loglama
 // Rollerde admin Girls top Last 10 login olanları listede - last success  fail  listesi getirme
-// standard locked admin etc.
 // docker
-// her login olduğunda user log collectionuna tarih ve emaili arraye insert
-// userLog collectionu: email, tarih , operation(login or signup), status(success or fail)
