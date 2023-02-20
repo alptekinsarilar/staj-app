@@ -1,5 +1,4 @@
 const express = require("express");
-const allRoutes = require("./routes/allRoutes");
 const morgan = require("morgan");
 const logMiddleware = require("./middleware/logMiddleware");
 
@@ -25,7 +24,9 @@ app.use(express.json()); // Parse JSON bodies (as sent by API clients)
 app.use(morgan("tiny"));
 
 // routes
-app.use("/api", allRoutes);
+app.use("/api/register", require("./routes/register"));
+app.use("/api/login", require("./routes/login"));
+app.use("/api/user", require("./routes/users"));
 
 app.listen(8080, () => {
   console.log(`Server started on port 8080`);
