@@ -1,18 +1,16 @@
+import { Link } from "react-router-dom";
+
 const Navbar = () => {
   return (
-    <nav className="flex h-20 w-4/5 items-center bg-gray-100 py-5 px-5 shadow-md">
-      <h1 className="grow">
-        <a className="" href="/">
-          Lvnt Ltd
-        </a>
-      </h1>
-      <div className="m-1">
-        <a className="" href="/register">
-          Sign Up
-        </a>
-        <a className="ml-1.5" href="/login">
-          Login
-        </a>
+    <nav className="w-100 flex h-20 items-center justify-center">
+      <div className="flex w-4/5 items-center bg-gray-100 py-5 px-5 shadow-md">
+        <h1 className="grow">
+          <Link to={`/`}>Lvnt Ltd</Link>
+        </h1>
+        <div className="m-1">
+          <Link to={`/register`}>Sign Up</Link>
+          <Link to={`/login`}>Login</Link>
+        </div>
       </div>
     </nav>
   );

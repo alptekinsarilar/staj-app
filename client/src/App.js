@@ -1,10 +1,14 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+import { UserProvider } from "./context/UserContext";
+
 /* import all components */
 import Navbar from "./components/Navbar";
 import Users from "./pages/Users";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Content from "./components/Content";
+import ErrorPage from "./pages/ErrorPage";
 
 /* root routes */
 const router = createBrowserRouter([
@@ -13,6 +17,12 @@ const router = createBrowserRouter([
     element: (
       <>
         <Navbar />
+        <Content />
+      </>
+    ),
+    errorElement: (
+      <>
+        <ErrorPage />
       </>
     ),
   },
@@ -39,7 +49,9 @@ const router = createBrowserRouter([
     element: (
       <>
         <Navbar />
-        <Users />
+        <UserProvider>
+          <Users />
+        </UserProvider>
       </>
     ),
   },

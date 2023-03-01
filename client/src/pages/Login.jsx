@@ -1,16 +1,10 @@
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import Cookies from "js-cookie";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  // login mi sign in kısmında mı onu kontrol ediyoruz
-  // true ise login false ise signin tab'ı aktif durumda
-  const [isLogin, setToLogin] = useState(true);
-  const loginSigninHandler = () => {
-    setToLogin((prevState) => !prevState);
-  };
 
   const validateEmail = (email) => {
     return email.match(
@@ -18,15 +12,10 @@ const Login = () => {
       /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
   };
-  // login signup request farkı ayarla
-
   const submitHandler = async (e) => {
     e.preventDefault();
     if (validateEmail(email)) {
-      let domain = "register";
-      if (isLogin) domain = "login";
-
-      const response = await fetch(`/api/${domain}`, {
+      const response = await fetch(`/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,10 +28,17 @@ const Login = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Set HttpOnly cookie with JWT token
-        document.cookie = `access_token=${data.accessToken}; HttpOnly; Secure`;
+
+        const accessToken = data.accessToken; // örnek bir access token
+
+        // accessToken'ı cookie'ye ekleyin
+        Cookies.set("accessToken", accessToken, {
+          expires: new Date(Date.now() + 120000),
+          httpOnly: true,
+        });
+
         // Redirect to protected page
-        window.location.href = "/users";
+        // window.location.href = "/users";
       }
     } else {
       toast.error("Invalid email");
@@ -52,28 +48,17 @@ const Login = () => {
   return (
     <div>
       <main className="container mx-auto">
-        <div className="flex flex-col items-center justify-center">
-          <div className="m-12 text-xl">
-            <h2>Log In or Sign Up to Continue</h2>
-          </div>
-
+        <div
+          className="flex
+         h-screen flex-col items-center justify-center"
+        >
           <div className="mx-auto flex w-3/4 min-w-fit flex-col overflow-hidden rounded-xl bg-slate-50 sm:w-1/3">
             <div className="my-4 mx-2 flex items-center justify-start">
               <button
-                onClick={loginSigninHandler}
-                className={` mx-2 cursor-pointer text-xl duration-300 ease-in-out hover:text-gray-500 ${
-                  isLogin ? "pointer-events-none text-3xl" : "cursor-pointer"
-                } `}
+                className={` mx-2text-xl pointer-events-none text-3xl duration-300 ease-in-out
+               `}
               >
-                Log In
-              </button>
-              <button
-                onClick={loginSigninHandler}
-                className={` mx-2 cursor-pointer text-xl duration-300 ease-in-out hover:text-gray-500 ${
-                  isLogin ? "cursor-pointer" : "pointer-events-none text-3xl"
-                } `}
-              >
-                Sign Up
+                Login
               </button>
             </div>
             <Toaster />
@@ -95,7 +80,7 @@ const Login = () => {
                   type="submit"
                   className="flex-grow bg-green-400 py-4 text-sm text-slate-100 duration-300 ease-in-out hover:text-base"
                 >
-                  {isLogin ? "LOG IN" : "SIGN UP"}
+                  LOGIN
                 </button>
               </div>
             </form>

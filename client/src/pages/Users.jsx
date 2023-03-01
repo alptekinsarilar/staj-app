@@ -1,13 +1,21 @@
-import { useState, useEffect } from "react";
+import { useContext, useEffect } from "react";
+import UserContext from "../context/UserContext";
 
-function UserTable() {
-  const [users, setUsers] = useState([]);
+function UserList() {
+  const { users, getUsers, removeUser, makeUserAdmin } =
+    useContext(UserContext);
 
   useEffect(() => {
-    fetch("/api/user/all-users")
-      .then((response) => response.json())
-      .then((data) => setUsers(data));
-  }, []);
+    getUsers();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleRemoveUser = (email) => {
+    removeUser(email);
+  };
+
+  const handleMakeUserAdmin = (email) => {
+    makeUserAdmin(email);
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -19,6 +27,7 @@ function UserTable() {
               <th className="border py-2 px-4">Email</th>
               <th className="border py-2 px-4">Password</th>
               <th className="border py-2 px-4">User Role</th>
+              <th className="border py-2 px-4">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -27,6 +36,20 @@ function UserTable() {
                 <td className="border py-2 px-4">{user.email}</td>
                 <td className="border py-2 px-4">{user.password}</td>
                 <td className="border py-2 px-4">{user.userRole}</td>
+                <td className="border py-2 px-4">
+                  <button
+                    className="m-2 rounded bg-red-500 py-2 px-2 font-bold text-white"
+                    onClick={() => handleRemoveUser(user.email)}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="rounded bg-green-500 py-2 px-2 font-bold text-white"
+                    onClick={() => handleMakeUserAdmin(user.email)}
+                  >
+                    Make Admin
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -36,4 +59,4 @@ function UserTable() {
   );
 }
 
-export default UserTable;
+export default UserList;
